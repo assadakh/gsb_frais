@@ -7,6 +7,7 @@ Contrôleurs de l'application GSB Frais
 """
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.contrib.auth.hashers import check_password
 from datetime import datetime, date
 from .models import Visiteur, FicheFrais, LigneFraisForfait, LigneFraisHorsForfait, FraisForfait, Etat
 from .utils import (
@@ -17,38 +18,38 @@ from .utils import (
 
 
 # ============================================================================
-# CONTRÔLEUR CONNEXION - Équivalent de c_connexion.php
+# CONTRÔLEUR CONNEXION
 # ============================================================================
 
 def connexion(request):
     """
-    Gère la connexion des visiteurs
-    Équivalent de c_connexion.php - case 'valideConnexion'
+    Gère la connexion des visiteurs avec vérification de mot de passe haché
     """
-    # Si déjà connecté, rediriger vers accueil
     if est_connecte(request):
         return redirect('accueil')
 
-    # Afficher le formulaire de connexion par défaut
     if request.method != 'POST':
         return render(request, 'frais/v_connexion.html', {'is_login_page': True})
 
-    # Traiter la soumission du formulaire
     login = request.POST.get('login', '')
-    mdp = request.POST.get('mdp', '')
+    mdp_saisi = request.POST.get('mdp', '') # Le mot de passe en clair tapé par l'user
 
     try:
-        # Équivalent de: $pdo->getInfosVisiteur($login, $mdp)
-        visiteur = Visiteur.objects.get(login=login, mdp=mdp)
+        # 1. On cherche l'utilisateur SEULEMENT par son login
+        visiteur = Visiteur.objects.get(login=login)
 
-        # Connexion réussie
-        # Équivalent de: connecter($id, $nom, $prenom)
-        connecter(request, visiteur.id, visiteur.nom, visiteur.prenom)
-        return redirect('accueil')
+        # 2. On compare le mot de passe saisi avec le hash en base
+        if check_password(mdp_saisi, visiteur.mdp):
+            # C'est gagné !
+            connecter(request, visiteur.id, visiteur.nom, visiteur.prenom)
+            return redirect('accueil')
+        else:
+            # Mauvais mot de passe
+            messages.error(request, "Login ou mot de passe incorrect")
+            return render(request, 'frais/v_connexion.html', {'is_login_page': True})
 
     except Visiteur.DoesNotExist:
-        # Login ou mot de passe incorrect
-        # Équivalent de: ajouterErreur("Login ou mot de passe incorrect")
+        # Login inconnu
         messages.error(request, "Login ou mot de passe incorrect")
         return render(request, 'frais/v_connexion.html', {'is_login_page': True})
 

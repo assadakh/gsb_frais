@@ -1,6 +1,7 @@
 import os
 import django
 from datetime import date
+from django.contrib.auth.hashers import make_password
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'gsb_frais.settings')
 django.setup()
@@ -94,15 +95,19 @@ visiteurs_data = [
     {'id': 'f4', 'nom': 'Gest', 'prenom': 'Alain', 'login': 'agest', 'mdp': 'dywvt', 'adresse': '30 avenue de la mer', 'cp': '13025', 'ville': 'Berre', 'dateembauche': date(1985, 11, 1)},
 ]
 
-for visiteur in visiteurs_data:
-    obj, created = Visiteur.objects.get_or_create(
-        id=visiteur['id'],
-        defaults=visiteur
+for data in visiteurs_data:
+    # ON HACHE LE MOT DE PASSE AVANT L'INSERTION
+    mot_de_passe_clair = data['mdp']
+    data['mdp'] = make_password(mot_de_passe_clair)
+
+    # On utilise update_or_create pour forcer la mise à jour si le visiteur existe déjà
+    visiteur, created = Visiteur.objects.update_or_create(
+        id=data['id'],
+        defaults=data
     )
-    if created:
-        print(f"  [OK] {visiteur['prenom']} {visiteur['nom']} (login: {visiteur['login']})")
-    else:
-        print(f"  [INFO] {visiteur['login']} existe deja")
+    
+    action = "[CREATION]" if created else "[MISE A JOUR]"
+    print(f"  {action} {visiteur.prenom} {visiteur.nom} -> MDP haché OK")
 
 # ============================================================================
 # RESUME

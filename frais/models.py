@@ -15,8 +15,8 @@ class Visiteur(models.Model):
     nom = models.CharField(max_length=30, null=True, blank=True, db_column='nom')
     prenom = models.CharField(max_length=30, null=True, blank=True, db_column='prenom')
     login = models.CharField(max_length=20, null=True, blank=True, db_column='login')
-    mdp = models.CharField(max_length=20, null=True, blank=True, db_column='mdp')  # ← CORRIGÉ : 20 au lieu de 255
-    adresse = models.CharField(max_length=40, null=True, blank=True, db_column='adresse')  # ← CORRIGÉ : 40 au lieu de 30
+    mdp = models.CharField(max_length=255, null=True, blank=True, db_column='mdp')
+    adresse = models.CharField(max_length=40, null=True, blank=True, db_column='adresse')
     cp = models.CharField(max_length=5, null=True, blank=True, db_column='cp')
     ville = models.CharField(max_length=30, null=True, blank=True, db_column='ville')
     dateembauche = models.DateField(db_column='dateEmbauche', null=True, blank=True)
