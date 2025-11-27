@@ -1,0 +1,14 @@
+# Fichiers Python compilés
+__pycache__/
+*.py[cod]
+
+# Environnement virtuel (adapte le nom si le tien s'appelle autrement, ex: .env)
+venv/
+env/
+.env
+
+# Base de données (on ne veut pas écraser la BDD du serveur avec la tienne)
+db.sqlite3
+
+# Fichiers médias (images uploadées)
+media/
