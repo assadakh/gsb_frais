@@ -1,0 +1,144 @@
+{% include 'frais/v_entete.html' %}
+
+{% include 'frais/v_sommaire.html' %}
+
+<div class="frais-section">
+    <div class="frais-section-header">
+        <div class="frais-section-icon">
+            <i class="fas fa-file-invoice"></i>
+        </div>
+        <h3>Fiche de frais du mois {{ nom_mois }} {{ num_annee }}</h3>
+    </div>
+</div>
+
+<!-- Informations sur la fiche -->
+<div class="card fade-in">
+    <div class="card-header">
+        <i class="fas fa-info-circle me-2"></i> État de la fiche
+    </div>
+    <div class="card-body">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="p-3" style="background: #f8fafc; border-radius: 10px;">
+                    <div class="montant-label mb-2">
+                        <i class="fas fa-check-circle me-1"></i> État
+                    </div>
+                    <div class="etat-badge etat-{{ lib_etat|slice:':2'|lower }}">
+                        {{ lib_etat }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-3" style="background: #f8fafc; border-radius: 10px;">
+                    <div class="montant-label mb-2">
+                        <i class="fas fa-euro-sign me-1"></i> Montant validé
+                    </div>
+                    <div class="montant-display">{{ montant_valide }} €</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-3" style="background: #f8fafc; border-radius: 10px;">
+                    <div class="montant-label mb-2">
+                        <i class="fas fa-paperclip me-1"></i> Justificatifs
+                    </div>
+                    <div style="font-size: 1.3rem; font-weight: 600; color: #64748b;">
+                        {{ nb_justificatifs }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-3" style="background: #f8fafc; border-radius: 10px;">
+                    <div class="montant-label mb-2">
+                        <i class="fas fa-calendar-check me-1"></i> Date de modification
+                    </div>
+                    <div style="font-size: 1.1rem; font-weight: 600; color: #64748b;">
+                        {{ date_modif|default:"Non modifiée" }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Frais au forfait -->
+<div class="card mt-4 fade-in">
+    <div class="card-header">
+        <i class="fas fa-list me-2"></i> Éléments forfaitisés
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th style="width: 70%;">
+                            <i class="fas fa-tag me-2"></i> Frais
+                        </th>
+                        <th style="width: 30%;">
+                            <i class="fas fa-hashtag me-2"></i> Quantité
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for frais in les_frais_forfait %}
+                    <tr>
+                        <td><strong>{{ frais.libelle }}</strong></td>
+                        <td>
+                            {% if frais.quantite > 0 %}
+                                <span class="badge bg-success">{{ frais.quantite }}</span>
+                            {% else %}
+                                <span class="text-muted">0</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Frais hors forfait -->
+<div class="card mt-4 fade-in">
+    <div class="card-header">
+        <i class="fas fa-receipt me-2"></i> Descriptif des éléments hors forfait
+        <span class="badge bg-light text-dark ms-2">{{ nb_justificatifs }} justificatif(s)</span>
+    </div>
+    <div class="card-body">
+        {% if les_frais_hors_forfait %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-calendar me-2"></i> Date</th>
+                        <th><i class="fas fa-tag me-2"></i> Libellé</th>
+                        <th><i class="fas fa-euro-sign me-2"></i> Montant</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for frais in les_frais_hors_forfait %}
+                    <tr>
+                        <td><strong>{{ frais.date }}</strong></td>
+                        <td>{{ frais.libelle }}</td>
+                        <td><span class="badge bg-primary">{{ frais.montant }} €</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            Aucun frais hors forfait pour ce mois.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Bouton retour -->
+<div class="mt-4 text-center">
+    <a href="{% url 'etat_frais' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left me-2"></i> Retour à la sélection
+    </a>
+</div>
+
+{% include 'frais/v_pied.html' %}

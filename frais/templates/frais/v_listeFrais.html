@@ -1,0 +1,146 @@
+{% include 'frais/v_entete.html' %}
+
+{% include 'frais/v_sommaire.html' %}
+
+<div class="frais-section">
+    <div class="frais-section-header">
+        <div class="frais-section-icon">
+            <i class="fas fa-calendar-alt"></i>
+        </div>
+        <h3>Fiche de frais du mois {{ nom_mois }} {{ num_annee }}</h3>
+    </div>
+</div>
+
+<!-- Frais au forfait -->
+<div class="card fade-in">
+    <div class="card-header">
+        <i class="fas fa-list me-2"></i> Éléments forfaitisés
+    </div>
+    <div class="card-body">
+        <form method="post" action="{% url 'gerer_frais' %}">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="validerMajFraisForfait">
+            
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th style="width: 60%;">
+                            <i class="fas fa-tag me-2"></i> Frais
+                        </th>
+                        <th style="width: 40%;">
+                            <i class="fas fa-hashtag me-2"></i> Quantité
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for frais in les_frais_forfait %}
+                    <tr>
+                        <td><strong>{{ frais.libelle }}</strong></td>
+                        <td>
+                            <input type="number"
+                                   class="form-control"
+                                   name="frais_{{ frais.idfrais }}"
+                                   value="{{ frais.quantite }}"
+                                   min="0"
+                                   placeholder="0">
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <p></p>
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="fas fa-save me-2"></i> Enregistrer les modifications
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Frais hors forfait -->
+<div class="card mt-4 fade-in">
+    <div class="card-header">
+        <i class="fas fa-plus-circle me-2"></i> Descriptif des éléments hors forfait
+    </div>
+    <div class="card-body">
+        <!-- Formulaire d'ajout -->
+        <form method="post" action="{% url 'gerer_frais' %}" class="form-inline-add">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="validerCreationFrais">
+
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label for="dateFrais" class="form-label">
+                        <i class="fas fa-calendar me-1"></i> Date (jj/mm/aaaa)
+                    </label>
+                    <input type="text" class="form-control" name="dateFrais" id="dateFrais"
+                           placeholder="20/11/2025" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="libelle" class="form-label">
+                        <i class="fas fa-tag me-1"></i> Libellé
+                    </label>
+                    <input type="text" class="form-control" name="libelle" id="libelle"
+                           placeholder="Description du frais" required>
+                </div>
+                <div class="col-md-2">
+                    <label for="montant" class="form-label">
+                        <i class="fas fa-euro-sign me-1"></i> Montant
+                    </label>
+                    <input type="number" step="0.01" class="form-control" name="montant" id="montant"
+                           placeholder="0.00" required>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="fas fa-plus me-2"></i> Ajouter
+                    </button>
+                </div>
+            </div>
+        </form>
+        
+        <!-- Liste des frais hors forfait -->
+        {% if les_frais_hors_forfait %}
+        <div class="table-responsive mt-4">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-calendar me-2"></i> Date</th>
+                        <th><i class="fas fa-tag me-2"></i> Libellé</th>
+                        <th><i class="fas fa-euro-sign me-2"></i> Montant</th>
+                        <th style="width: 120px;"><i class="fas fa-cog me-2"></i> Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for frais in les_frais_hors_forfait %}
+                    <tr>
+                        <td><strong>{{ frais.date }}</strong></td>
+                        <td>{{ frais.libelle }}</td>
+                        <td><span class="badge bg-primary">{{ frais.montant }} €</span></td>
+                        <td>
+                            <form method="post" action="{% url 'gerer_frais' %}" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="supprimerFrais">
+                                <input type="hidden" name="idFrais" value="{{ frais.id }}">
+                                <button type="submit" class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Voulez-vous vraiment supprimer ce frais ?');">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info mt-4">
+            <i class="fas fa-info-circle me-2"></i>
+            Aucun frais hors forfait pour ce mois.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% include 'frais/v_pied.html' %}

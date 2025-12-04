@@ -1,0 +1,48 @@
+{% include 'frais/v_entete.html' %}
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="card fade-in">
+            <div class="card-header">
+                <div class="login-icon">
+                    <i class="fas fa-user-lock"></i>
+                </div>
+                <h4>Identification</h4>
+                <p class="mb-0 mt-2" style="font-size: 0.9rem; opacity: 0.9;">Connectez-vous pour accéder à votre espace</p>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{% url 'connexion' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="login" class="form-label">
+                            <i class="fas fa-user me-1"></i> Login
+                        </label>
+                        <input type="text" class="form-control" id="login" name="login"
+                               placeholder="Votre identifiant" required autofocus>
+                    </div>
+                    <div class="mb-4">
+                        <label for="mdp" class="form-label">
+                            <i class="fas fa-lock me-1"></i> Mot de passe
+                        </label>
+                        <input type="password" class="form-control" id="mdp" name="mdp"
+                               placeholder="Votre mot de passe" required>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-sign-in-alt me-2"></i> Se connecter
+                        </button>
+                    </div>
+                </form>
+
+                <div class="mt-4 text-center">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Utilisez vos identifiants GSB pour vous connecter
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'frais/v_pied.html' %}

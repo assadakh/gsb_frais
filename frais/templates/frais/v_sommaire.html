@@ -1,0 +1,34 @@
+{% if request.session.idVisiteur %}
+<div class="user-menu fade-in">
+    <div class="user-menu-header">
+        <div class="user-info">
+            <div class="user-avatar">
+                {{ request.session.prenom|first }}{{ request.session.nom|first }}
+            </div>
+            <div>
+                <div class="user-name">{{ request.session.prenom }} {{ request.session.nom }}</div>
+                <small style="opacity: 0.8;">Visiteur médical</small>
+            </div>
+        </div>
+        <a href="{% url 'deconnexion' %}" class="btn btn-sm btn-light">
+            <i class="fas fa-sign-out-alt me-1"></i> Déconnexion
+        </a>
+    </div>
+    <div class="card-body">
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == '/gerer-frais/' %}active{% endif %}"
+                   href="{% url 'gerer_frais' %}">
+                    <i class="fas fa-edit me-2"></i> Saisir Fiche de Frais
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == '/etat-frais/' %}active{% endif %}"
+                   href="{% url 'etat_frais' %}">
+                    <i class="fas fa-file-invoice me-2"></i> Consulter mes Fiches
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+{% endif %}
