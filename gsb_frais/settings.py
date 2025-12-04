@@ -74,6 +74,11 @@ DATABASES = {
     }
 }
 
+# Pour autoriser swiss-galaxy a s'y connecter
+CSRF_TRUSTED_ORIGINS = [
+    "https://www.swiss-galaxyc.com",
+    "https://swiss-galaxyc.com"
+]
 
 # Password validation
 
