@@ -13,9 +13,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-gsb-frais-2024-change-me-in-production'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['www.swiss-galaxyc.com', 'swiss-galaxyc.com', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -38,6 +38,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'gsb_frais.urls'
@@ -74,6 +75,11 @@ DATABASES = {
     }
 }
 
+# Pour autoriser swiss-galaxy
+CSRF_TRUSTED_ORIGINS = [
+    "https://www.swiss-galaxyc.com",
+    "https://swiss-galaxyc.com"
+]
 
 # Password validation
 
@@ -108,6 +114,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 
